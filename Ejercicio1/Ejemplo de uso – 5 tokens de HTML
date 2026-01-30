@@ -1,0 +1,7 @@
+// Ejemplos de tokens
+
+{TOKEN_HTML_TAG, "img", VALUE_NONE}
+{TOKEN_HTML_ATTRIBUTE, "src", VALUE_NONE}
+{TOKEN_STRING, "\"house.gif\"", VALUE_STRING, .value.strVal="house.gif"}
+{TOKEN_HTML_TEXT, "More Pictures", VALUE_STRING, .value.strVal="More Pictures"}
+{TOKEN_HTML_TAG, "/a", VALUE_NONE}
