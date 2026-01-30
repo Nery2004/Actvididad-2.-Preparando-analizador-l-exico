@@ -1,0 +1,32 @@
+// Definicion
+
+typedef enum {
+    TOKEN_KEYWORD,
+    TOKEN_IDENTIFIER,
+    TOKEN_NUMBER,
+    TOKEN_STRING,
+    TOKEN_OPERATOR,
+    TOKEN_SEPARATOR,
+    TOKEN_COMMENT,
+    TOKEN_HTML_TAG,
+    TOKEN_HTML_ATTRIBUTE,
+    TOKEN_HTML_TEXT
+} TokenType;
+
+typedef enum {
+    VALUE_NONE,
+    VALUE_INT,
+    VALUE_FLOAT,
+    VALUE_STRING
+} ValueType;
+
+typedef struct {
+    TokenType type;
+    char lexeme[64];
+    ValueType valueType;
+    union {
+        int intVal;
+        float floatVal;
+        char strVal[128];
+    } value;
+} Token;
