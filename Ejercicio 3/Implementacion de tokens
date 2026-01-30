@@ -1,0 +1,128 @@
+import java.util.*;
+
+class Lexer {
+    private String source;
+    private int index = 0;
+    private int line = 1;
+    private int column = 1;
+
+    private static final Set<String> keywords = Set.of(
+        "public", "class", "private", "static", "final",
+        "void", "int", "double", "String", "if", "else", "return", "new"
+    );
+
+    private List<Token> tokens = new ArrayList<>();
+    private SymbolTable symbolTable = new SymbolTable();
+
+    Lexer(String source) {
+        this.source = source;
+    }
+
+    public void tokenize() {
+        while (index < source.length()) {
+            char c = source.charAt(index);
+
+            if (Character.isWhitespace(c)) {
+                handleWhitespace(c);
+            } else if (Character.isLetter(c) || c == '_') {
+                tokenizeIdentifier();
+            } else if (Character.isDigit(c)) {
+                tokenizeNumber();
+            } else if (c == '"') {
+                tokenizeString();
+            } else if (c == '/' && peek() == '/') {
+                tokenizeComment();
+            } else if ("+-*/=<>!".indexOf(c) >= 0) {
+                addToken(TokenType.OPERATOR, String.valueOf(c));
+                advance();
+            } else {
+                addToken(TokenType.SEPARATOR, String.valueOf(c));
+                advance();
+            }
+        }
+    }
+
+    private void tokenizeIdentifier() {
+        int startCol = column;
+        StringBuilder sb = new StringBuilder();
+        while (index < source.length() &&
+              (Character.isLetterOrDigit(source.charAt(index)) || source.charAt(index) == '_')) {
+            sb.append(source.charAt(index));
+            advance();
+        }
+        String lexeme = sb.toString();
+        if (keywords.contains(lexeme)) {
+            tokens.add(new Token(TokenType.KEYWORD, lexeme, line, startCol));
+        } else {
+            tokens.add(new Token(TokenType.IDENTIFIER, lexeme, line, startCol));
+            symbolTable.add(lexeme, "IDENTIFIER");
+        }
+    }
+
+    private void tokenizeNumber() {
+        int startCol = column;
+        StringBuilder sb = new StringBuilder();
+        while (index < source.length() &&
+              (Character.isDigit(source.charAt(index)) || source.charAt(index) == '.')) {
+            sb.append(source.charAt(index));
+            advance();
+        }
+        tokens.add(new Token(TokenType.NUMBER, sb.toString(), line, startCol));
+    }
+
+    private void tokenizeString() {
+        int startCol = column;
+        advance(); // skip opening quote
+        StringBuilder sb = new StringBuilder();
+        while (index < source.length() && source.charAt(index) != '"') {
+            sb.append(source.charAt(index));
+            advance();
+        }
+        advance(); // closing quote
+        tokens.add(new Token(TokenType.STRING, sb.toString(), line, startCol));
+    }
+
+    private void tokenizeComment() {
+        int startCol = column;
+        StringBuilder sb = new StringBuilder();
+        while (index < source.length() && source.charAt(index) != '\n') {
+            sb.append(source.charAt(index));
+            advance();
+        }
+        tokens.add(new Token(TokenType.COMMENT, sb.toString(), line, startCol));
+    }
+
+    private void handleWhitespace(char c) {
+        if (c == '\n') {
+            line++;
+            column = 1;
+        } else {
+            column++;
+        }
+        index++;
+    }
+
+    private void addToken(TokenType type, String lexeme) {
+        tokens.add(new Token(type, lexeme, line, column));
+    }
+
+    private void advance() {
+        index++;
+        column++;
+    }
+
+    private char peek() {
+        if (index + 1 >= source.length()) return '\0';
+        return source.charAt(index + 1);
+    }
+
+    public void printTokens() {
+        System.out.println("=== Tokens ===");
+        for (Token t : tokens) {
+            System.out.println(
+                t.type + " -> '" + t.lexeme + "' (Line " + t.line + ", Col " + t.column + ")"
+            );
+        }
+        symbolTable.print();
+    }
+}

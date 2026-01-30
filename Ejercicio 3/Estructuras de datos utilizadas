@@ -1,0 +1,45 @@
+//2.1 Enumeración de tipos de token
+enum TokenType {
+    KEYWORD,
+    IDENTIFIER,
+    NUMBER,
+    STRING,
+    OPERATOR,
+    SEPARATOR,
+    COMMENT
+}
+
+
+//2.2 Clase Token
+class Token {
+    TokenType type;
+    String lexeme;
+    int line;
+    int column;
+
+    Token(TokenType type, String lexeme, int line, int column) {
+        this.type = type;
+        this.lexeme = lexeme;
+        this.line = line;
+        this.column = column;
+    }
+}
+
+
+//2.3 Tabla de símbolos
+
+import java.util.HashMap;
+import java.util.Map;
+
+class SymbolTable {
+    Map<String, String> table = new HashMap<>();
+
+    void add(String identifier, String category) {
+        table.put(identifier, category);
+    }
+
+    void print() {
+        System.out.println("\n=== Symbol Table ===");
+        table.forEach((k, v) -> System.out.println(k + " -> " + v));
+    }
+}
