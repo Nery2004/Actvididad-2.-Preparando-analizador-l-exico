@@ -1,0 +1,7 @@
+// Ejemplos de tokens
+
+{TOKEN_KEYWORD, "float", VALUE_NONE}
+{TOKEN_IDENTIFIER, "limitedSquare", VALUE_STRING, .value.strVal="limitedSquare"}
+{TOKEN_NUMBER, "10.0", VALUE_FLOAT, .value.floatVal=10.0}
+{TOKEN_OPERATOR, "<=", VALUE_NONE}
+{TOKEN_NUMBER, "100", VALUE_INT, .value.intVal=100}
